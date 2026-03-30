@@ -1,9 +1,9 @@
-import { db } from "../db/database.js";
+import {AccountModel} from "../models/accountModel.js"
 import { TransactionModel } from "../models/transactionModel.js";
 
 export const TransactionService = {
   async createAccount(name, balance = 0, icon = "") {
-    return db.accounts.add({
+    return AccountModel.create({
       name,
       balance,
       icon,
