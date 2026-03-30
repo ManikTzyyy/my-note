@@ -1,56 +1,13 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Notes App</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="manifest" href="manifest.json">
-</head>
-<body>
-  <h1>📝 Catatan</h1>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Finance</title>
+  </head>
+  <body>
+    <p>App</p>
 
-  <input id="input" placeholder="Tulis catatan..." />
-  <button onclick="addNote()">Tambah</button>
-
-  <ul id="list"></ul>
-
-  <script>
-    let notes = JSON.parse(localStorage.getItem("notes")) || [];
-
-    function render() {
-      const list = document.getElementById("list");
-      list.innerHTML = "";
-      notes.forEach((note, i) => {
-        list.innerHTML += `
-          <li>
-            ${note}
-            <button onclick="deleteNote(${i})">❌</button>
-          </li>
-        `;
-      });
-    }
-
-    function addNote() {
-      const input = document.getElementById("input");
-      if (!input.value) return;
-      notes.push(input.value);
-      localStorage.setItem("notes", JSON.stringify(notes));
-      input.value = "";
-      render();
-    }
-
-    function deleteNote(i) {
-      notes.splice(i, 1);
-      localStorage.setItem("notes", JSON.stringify(notes));
-      render();
-    }
-
-    render();
-
-    // register service worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
-    }
-  </script>
-</body>
+    <script type="module" src="./main.js"></script>
+  </body>
 </html>
