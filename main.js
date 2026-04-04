@@ -21,6 +21,13 @@ async function init() {
 
   console.log("Account : ", await db.accounts.toArray());
   console.log("Transaction", await db.transactions.toArray());
+
+
+  if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js")
+    .then(() => console.log("SW registered"))
+    .catch(err => console.log("SW error", err));
+}
 }
 
 init();
