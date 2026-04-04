@@ -1,8 +1,13 @@
 import { db } from "../db/database.js";
 
 export const AccountModel = {
-  create(data) {
-    return db.accounts.add(data);
+  async create(data) {
+    const id = await db.accounts.add(data);
+
+    return {
+      id,
+      ...data,
+    };
   },
 
   getAll() {
@@ -11,6 +16,10 @@ export const AccountModel = {
 
   update(id, data) {
     return db.accounts.update(id, data);
+  },
+
+  delete(id){
+    return db.accounts.delete(id)
   },
 
   findById(id) {

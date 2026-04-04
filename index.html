@@ -6,13 +6,173 @@
     <title>My Finance</title>
     <link rel="stylesheet" href="./assets/css/style.css" />
     <link rel="stylesheet" href="./assets/css/tailwind.min.css" />
+    <link rel="stylesheet" href="./assets/css/datatables.min.css" />
+    <link rel="stylesheet" href="./assets/css/sweetalert2.min.css">
   </head>
-  <body>
-    <p>App</p>
-    <i data-lucide="plus"></i>
-    <i data-lucide="trash"></i>
-    <i data-lucide="wallet"></i>
+  <body class="relative" id="body">
+    <div
+      class="fixed w-screen nav flex justify-between items-center bg-white p-5 drop-shadow-sm filter"
+    >
+      <div class="">My Finance</div>
+      <div class="flex gap-2">
+        <button
+          class="bg-green-100 flex items-center justify-center px-3 py-1 rounded-full gap-2 text-green-800 hover:bg-green-600 hover:text-white"
+          id="btn-income"
+        >
+          Inc
+          <i data-lucide="banknote-arrow-up"></i>
+        </button>
+        <button
+          class="bg-red-100 flex items-center justify-center px-3 py-1 rounded-full gap-2 text-red-800 hover:bg-red-600 hover:text-white"
+          id="btn-expense"
+        >
+          Exp
+          <i data-lucide="banknote-arrow-down"></i>
+        </button>
+      </div>
+    </div>
+    <br /><br /><br />
+
+    <!-- content -->
+    <div class="p-5">
+      <!-- account section -->
+      <div class="">
+        <div class="flex justify-between items-center border-b pb-2">
+          <div class="flex gap-3 items-center">
+            <div
+              class="bg-blue-50 w-9 h-9 flex justify-center items-center rounded-full text-blue-900"
+            >
+              <i data-lucide="credit-card"></i>
+            </div>
+            <h1>Accounts</h1>
+          </div>
+          <button id="btn-add-acc"><i data-lucide="plus"></i></button>
+        </div>
+        <!-- content -->
+        <div
+          class="flex flex-wrap gap-3 py-2 items-center justify-center"
+          id="container-accounts"
+        ></div>
+      </div>
+      <!-- End account section -->
+
+      <!-- transaction section -->
+      <div class="">
+        <div class="flex justify-between items-center border-b pb-2">
+          <div class="flex gap-3 items-center">
+            <div
+              class="bg-yellow-50 w-9 h-9 flex justify-center items-center rounded-full text-yellow-900"
+            >
+              <i data-lucide="arrow-right-left"></i>
+            </div>
+            <h1>Transactions</h1>
+          </div>
+        </div>
+        <!-- content -->
+        <div class="">
+          <table id="tableTrans" class="display stripe">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>date</th>
+                <th>descriptions</th>
+                <th>status</th>
+                <th>from</th>
+                <th>to</th>
+                <th>amount</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td class="whitespace-nowrap">1 april 2026</td>
+                <td class="whitespace-nowrap">Lunch and dinner</td>
+                <td>
+                  <div
+                    class="bg-red-100 w-6 h-6 flex justify-center items-center rounded-full text-red-900"
+                  >
+                    <i data-lucide="arrow-down" class="w-4 h-4"></i>
+                  </div>
+                </td>
+                <td>
+                  <div
+                    class="flex bg-blue-100 px-3 gap-2 rounded-full justify-between items-center"
+                  >
+                    <i data-lucide="apple" class="w-4 h-4"></i>
+                    <p>Meal</p>
+                  </div>
+                </td>
+                <td>-</td>
+                <td class="whitespace-nowrap">IDR 100,000</td>
+                <td>
+                  <div class="flex gap-3">
+                    <button id="btn-edit-trc">
+                      <i data-lucide="pencil" class="w-4 h-4"></i>
+                    </button>
+                    <button id="btn-delete-trc">
+                      <i data-lucide="trash" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- End transaction section -->
+    </div>
+
+    <!-- Pop up -->
+
+    <div
+      class="fixed inset-0 w-full h-full bg-black bg-opacity-25 flex justify-center items-center hidden"
+      id="acc-popup"
+    >
+      <div class="box w-full h-auto rounded-sm bg-white p-2 m-2" id="popBox">
+        <div class="flex justify-between border-b mb-2 py-2">
+          <div class="text-sm">Add New Account</div>
+          <button id="close-pop-up"><i data-lucide="x"></i></button>
+        </div>
+
+        <div class="text-xs flex flex-col mb-2">
+          <label for="name">Account Name</label>
+          <input
+            class="border px-2 py-1 rounded-sm focus:outline-none"
+            type="text"
+            name="name"
+            id="acc-name"
+            placeholder="ex. acumalaka"
+          />
+        </div>
+
+        <div class="text-xs flex flex-col mb-2">
+          <label for="balance">Start Balance</label>
+          <input
+            class="border px-2 py-1 rounded-sm focus:outline-none"
+            type="text"
+            name="name"
+            id="acc-start"
+            value="0"
+          />
+        </div>
+
+        <div class="flex justify-end">
+          <button
+            class="bg-green-100 px-4 py-1 rounded-full text-green-900 hover:bg-green-300"
+            id="btn-save-acc"
+          >
+            save
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./lib/datatables.min.js"></script>
     <script src="./lib/lucide.min.js"></script>
     <script type="module" src="./main.js"></script>
+    <script src="./utils/helper.js"></script>
+    <script type="module" src="./utils/account.js"></script>
+    <script src="./lib/sweetalert2.all.min.js"></script>
   </body>
 </html>

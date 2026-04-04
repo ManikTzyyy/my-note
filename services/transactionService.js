@@ -1,15 +1,7 @@
-import {AccountModel} from "../models/accountModel.js"
+
 import { TransactionModel } from "../models/transactionModel.js";
 
 export const TransactionService = {
-  async createAccount(name, balance = 0, icon = "") {
-    return AccountModel.create({
-      name,
-      balance,
-      icon,
-      created_at: new Date(),
-    });
-  },
 
   async addIncome({ to_account_id, amount, desc }) {
     await TransactionModel.create({
