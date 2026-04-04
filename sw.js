@@ -16,6 +16,8 @@ const urlsToCache = [
 
   "/utils/helper.js",
   "/utils/render.js",
+  "/utils/account.js",
+  "/utils/utils.js",
 
   "/lib/dexie.mjs",
   "/lib/lucide.min.js",
@@ -28,6 +30,7 @@ const urlsToCache = [
   "/assets/css/datatables.min.css",
 
   "/assets/fonts/Roboto-Regular.ttf",
+  "/icon.png"
 ];
 
 self.addEventListener("install", (event) => {
