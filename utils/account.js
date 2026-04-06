@@ -1,6 +1,7 @@
 import { myUtils } from "./utils.js";
 import { accountServices } from "../services/accountService.js";
 import { render } from "./render.js";
+import { TransactionService } from "../services/transactionService.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const addAccPopUp = document.querySelector("#acc-popup");
@@ -12,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("container-accounts");
 
   const btnSave = document.getElementById("btn-save-acc");
+  myUtils.formatedValue(accStartBlncInput);
 
   btnAddAcc.addEventListener("click", () => {
     addAccPopUp.classList.remove("hidden");
@@ -25,18 +27,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   btnSave.addEventListener("click", async () => {
     const errorName = myUtils.inputValidator(accNameInput);
+    const selectedIcon = document.getElementById("select-icon");
 
     if (errorName) {
       return;
     }
     const accName = accNameInput.value;
-    const accStart = accStartBlncInput.value || 0;
+    const accStartInputValue = accStartBlncInput.value || 0;
+    const accStartValue = Number(accStartInputValue.replace(/\./g, ""));
+
     try {
       btnSave.disabled = true;
       const newAcc = await accountServices.createAccount(
         accName,
-        accStart,
-        "landmark"
+        accStartValue,
+        selectedIcon.dataset.icon,
+        selectedIcon.dataset.bgclr,
+        selectedIcon.dataset.txtclr
       );
 
       render.initAccCard(newAcc, container, true);
@@ -53,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.addEventListener("click", async (e) => {
     const btnDeleteAcc = e.target.closest(".btn-dlt-acc");
+    const containerTbl = document.getElementById("trc-body");
     if (!btnDeleteAcc) return;
     const idAcc = Number(btnDeleteAcc.dataset.acc);
     Swal.fire({
@@ -64,6 +72,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (res.isConfirmed) {
         await accountServices.delete(idAcc);
         btnDeleteAcc.closest(".card")?.remove();
+
+        const accList = await accountServices.getAll();
+        const trcList = await TransactionService.getAll();
+        const dataTrc = myUtils.getAllWithAcc(trcList, accList);
+        render.initTrcRow(dataTrc, containerTbl, false);
       }
     });
   });

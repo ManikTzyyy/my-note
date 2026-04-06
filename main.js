@@ -1,33 +1,54 @@
 import { TransactionService } from "./services/transactionService.js";
-import { db } from "./db/database.js";
+import { accountServices } from "./services/accountService.js";
 import { render } from "./utils/render.js";
+import { myUtils } from "./utils/utils.js";
+
+const datePlace = document.getElementById("dateNow");
+const btnRefresh = document.getElementById("refresh-btn");
+let isRefreshing = false;
 
 async function init() {
-  const containerAcc = document.getElementById("container-accounts");
-  // await db.delete();
-  // await db.open();
-
-  // const cashId = await TransactionService.createAccount("Cash", 100000);
-
-  // // test income
-  // await TransactionService.addIncome({
-  //   to_account_id: cashId,
-  //   amount: 50000,
-  //   desc: "Gaji",
-  // });
-
-  render.initAccCard(await db.accounts.toArray(), containerAcc, false);
-  lucide.createIcons();
-
-  console.log("Account : ", await db.accounts.toArray());
-  console.log("Transaction", await db.transactions.toArray());
-
-
+  datePlace.innerHTML = new Date().toLocaleDateString("id-ID", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
   if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/sw.js")
-    .then(() => console.log("SW registered"))
-    .catch(err => console.log("SW error", err));
+    navigator.serviceWorker
+      .register("/sw.js")
+      .then(() => console.log("SW registered"))
+      .catch((err) => console.log("SW error", err));
+  }
+  refresh();
 }
+
+btnRefresh.addEventListener("click", async () => {
+  await refresh();
+});
+
+async function refresh() {
+  const containerAcc = document.getElementById("container-accounts");
+  const containerTbl = document.getElementById("trc-body");
+
+  if ($.fn.DataTable.isDataTable("#tableTrans")) {
+    $("#tableTrans").DataTable().clear().destroy();
+  }
+
+  containerAcc.innerHTML = "";
+  containerTbl.innerHTML = "";
+  const [accList, trcList] = await Promise.all([
+    accountServices.getAll(),
+    TransactionService.getAll(),
+  ]);
+
+  const dataTrc = myUtils.getAllWithAcc(trcList, accList);
+
+  // 🔥 render ulang
+  await render.initAccCard(accList, containerAcc, false);
+  await render.initTrcRow(dataTrc, containerTbl, false);
+
+  lucide.createIcons();
 }
 
 init();

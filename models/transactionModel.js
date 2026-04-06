@@ -1,11 +1,29 @@
 import { db } from "../db/database.js";
 
 export const TransactionModel = {
-  create(data) {
-    return db.transactions.add(data);
+  async create(data) {
+    const id = await db.transactions.add(data);
+    return {
+      id,
+      ...data,
+    };
   },
 
-  getAll() {
-    return db.transactions.toArray();
+  async getAll() {
+    return await db.transactions.toArray();
+  },
+
+  async delete(id) {
+    return await db.transactions.delete(id);
+  },
+
+  async findById(id) {
+    return await db.transactions.get(id);
+  },
+
+  async findByAccountId(accId) {
+    return await db.transactions
+      .filter((trc) => trc.from_account_id === accId || trc.to_account_id === accId)
+      .toArray();
   },
 };

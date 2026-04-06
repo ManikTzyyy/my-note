@@ -1,25 +1,15 @@
 @font-face {
-  font-family: "Roboto";
+  font-family: Roboto;
   src: url("../fonts/Roboto-Regular.ttf");
   font-style: normal;
   font-weight: 400;
 }
-
 * {
-  font-family: "Roboto", sans-serif !important;
-  transition: all 0.2s ease-in-out;
-  -webkit-transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-  -ms-transition: all 0.2s ease-in-out;
-  -o-transition: all 0.2s ease-in-out;
-
-  scrollbar-width: none !important;
+  font-family: Roboto, sans-serif !important;
 }
-
-*::-webkit-scrollbar {
+::-webkit-scrollbar {
   display: none !important;
 }
-
 input {
   transition: none !important;
   -webkit-transition: none !important;

@@ -7,24 +7,33 @@
     <link rel="stylesheet" href="./assets/css/style.css" />
     <link rel="stylesheet" href="./assets/css/tailwind.min.css" />
     <link rel="stylesheet" href="./assets/css/datatables.min.css" />
-    <link rel="stylesheet" href="./assets/css/sweetalert2.min.css">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="./assets/css/sweetalert2.min.css" />
+    <link rel="manifest" href="/manifest.json" />
   </head>
   <body class="relative" id="body">
-    <div
-      class="fixed w-screen nav flex justify-between items-center bg-white p-5 drop-shadow-sm filter"
+    <button
+      class="fixed bottom-3 left-3 bg-blue-100 rounded-full drop-shadow-lg w-10 h-10 z-10 flex justify-center items-center text-blue-900"
+      id="refresh-btn"
     >
-      <div class="">My Finance</div>
+      <i data-lucide="refresh-ccw"></i>
+    </button>
+    <div
+      class="fixed z-10 w-screen nav flex justify-between items-center bg-white p-5 drop-shadow-sm filter"
+    >
+      <div class="">
+        Nothing
+        <p class="text-sm" id="dateNow"></p>
+      </div>
       <div class="flex gap-2">
         <button
-          class="bg-green-100 flex items-center justify-center px-3 py-1 rounded-full gap-2 text-green-800 hover:bg-green-600 hover:text-white"
-          id="btn-income"
+          class="bg-green-100 flex items-center justify-center px-3 py-1 rounded-full gap-2 text-green-800 hover:bg-green-300 hover:text-white"
+          id="btn-inc"
         >
           Inc
           <i data-lucide="banknote-arrow-up"></i>
         </button>
         <button
-          class="bg-red-100 flex items-center justify-center px-3 py-1 rounded-full gap-2 text-red-800 hover:bg-red-600 hover:text-white"
+          class="bg-red-100 flex items-center justify-center px-3 py-1 rounded-full gap-2 text-red-800 hover:bg-red-300 hover:text-white"
           id="btn-expense"
         >
           Exp
@@ -73,51 +82,17 @@
         <div class="">
           <table id="tableTrans" class="display stripe">
             <thead>
-              <tr>
-                <th>#</th>
-                <th>date</th>
-                <th>descriptions</th>
-                <th>status</th>
-                <th>from</th>
-                <th>to</th>
-                <th>amount</th>
+              <tr class="text-xs font-thin">
+                <th>Date</th>
+                <th>Descriptions</th>
+                <th>Status</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Amount</th>
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td class="whitespace-nowrap">1 april 2026</td>
-                <td class="whitespace-nowrap">Lunch and dinner</td>
-                <td>
-                  <div
-                    class="bg-red-100 w-6 h-6 flex justify-center items-center rounded-full text-red-900"
-                  >
-                    <i data-lucide="arrow-down" class="w-4 h-4"></i>
-                  </div>
-                </td>
-                <td>
-                  <div
-                    class="flex bg-blue-100 px-3 gap-2 rounded-full justify-between items-center"
-                  >
-                    <i data-lucide="apple" class="w-4 h-4"></i>
-                    <p>Meal</p>
-                  </div>
-                </td>
-                <td>-</td>
-                <td class="whitespace-nowrap">IDR 100,000</td>
-                <td>
-                  <div class="flex gap-3">
-                    <button id="btn-edit-trc">
-                      <i data-lucide="pencil" class="w-4 h-4"></i>
-                    </button>
-                    <button id="btn-delete-trc">
-                      <i data-lucide="trash" class="w-4 h-4"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
+            <tbody id="trc-body"></tbody>
           </table>
         </div>
       </div>
@@ -127,7 +102,7 @@
     <!-- Pop up -->
 
     <div
-      class="fixed inset-0 w-full h-full bg-black bg-opacity-25 flex justify-center items-center hidden"
+      class="fixed inset-0 w-full h-full bg-black bg-opacity-25 flex justify-center z-50 items-center hidden"
       id="acc-popup"
     >
       <div class="box w-full h-auto rounded-sm bg-white p-2 m-2" id="popBox">
@@ -136,10 +111,56 @@
           <button id="close-pop-up"><i data-lucide="x"></i></button>
         </div>
 
+        <div class="flex w-full justify-between items-start">
+          <div class="text-xs flex flex-col mb-2 w-full">
+            <label for="name">Select Icon</label>
+            <div class="relative">
+              <button
+                id="select-icon"
+                class="bg-blue-100 h-10 w-10 flex justify-center items-center rounded-lg hover:bg-blue-200 text-blue-900"
+                data-icon="SmilePlus"
+                data-bgclr="bg-blue-100"
+                data-txtclr="bg-blue-900"
+              >
+                <i data-lucide="smile-plus"></i>
+              </button>
+
+              <div
+                id="icon-box"
+                class="hidden box-icon border-blue-100 p-2 border mt-2 rounded-lg absolute bg-white w-full"
+              >
+                <input
+                  type="search"
+                  name="search"
+                  id="icon-search"
+                  placeholder="search icon"
+                  class="border px-2 py-1 rounded-lg focus:outline-none text-sm w-full"
+                />
+                <div
+                  id="container-icon"
+                  class="flex flex-wrap pt-2 gap-3 text-blue-900 items-center justify-start max-h-32 overflow-x-scroll"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div>
+              <p class="text-xs mb-1">Background</p>
+              <div id="bgPicker" class="flex flex-wrap gap-2"></div>
+            </div>
+
+            <div>
+              <p class="text-xs mb-1">Color</p>
+              <div id="textPicker" class="flex flex-wrap gap-2"></div>
+            </div>
+          </div>
+        </div>
+
         <div class="text-xs flex flex-col mb-2">
           <label for="name">Account Name</label>
           <input
-            class="border px-2 py-1 rounded-sm focus:outline-none"
+            class="border px-2 py-1 rounded-sm focus:outline-none text-sm"
             type="text"
             name="name"
             id="acc-name"
@@ -150,7 +171,7 @@
         <div class="text-xs flex flex-col mb-2">
           <label for="balance">Start Balance</label>
           <input
-            class="border px-2 py-1 rounded-sm focus:outline-none"
+            class="border px-2 py-1 rounded-sm focus:outline-none text-sm"
             type="text"
             name="name"
             id="acc-start"
@@ -169,11 +190,72 @@
       </div>
     </div>
 
+    <!-- transaction pop up -->
+    <div
+      class="fixed inset-0 w-full h-full bg-black bg-opacity-25 flex justify-center z-50 items-center hidden"
+      id="trc-popup"
+    >
+      <div class="box w-full h-auto rounded-sm bg-white p-2 m-2" id="popBox">
+        <div class="flex justify-between border-b mb-2 py-2">
+          <div
+            class="text-sm flex gap-4 justify-center items-center"
+            id="statusPopup"
+          ></div>
+          <button id="close-pop-up-trc"><i data-lucide="x"></i></button>
+        </div>
+
+        <div class="text-xs flex flex-col mb-2">
+          <label for="date">Date</label>
+          <input
+            class="border px-2 py-1 rounded-sm focus:outline-none text-sm"
+            type="date"
+            name="date"
+            id="trnc-date"
+            placeholder="ex. acumalaka"
+          />
+        </div>
+
+        <div class="text-xs flex flex-col mb-2">
+          <label for="desc">Descriptions</label>
+          <input
+            class="border px-2 py-1 rounded-sm focus:outline-none text-sm"
+            type="text"
+            name="desc"
+            id="trnc-desc"
+            placeholder="ex. acumalaka"
+          />
+        </div>
+
+        <div class="text-xs flex flex-col mb-2">
+          <label for="value">value</label>
+          <input
+            class="border px-2 py-1 rounded-sm focus:outline-none text-sm"
+            type="text"
+            name="value"
+            id="trc-value"
+            value="0"
+          />
+        </div>
+
+        <div id="acc-ref-inp"></div>
+
+        <div class="flex justify-end">
+          <button
+            class="bg-green-100 px-4 py-1 rounded-full text-green-900 hover:bg-green-300"
+            id="btn-save-trc"
+          >
+            save
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="./lib/datatables.min.js"></script>
     <script src="./lib/lucide.min.js"></script>
     <script type="module" src="./main.js"></script>
     <script src="./utils/helper.js"></script>
     <script type="module" src="./utils/account.js"></script>
+    <script type="module" src="./utils/transaction.js"></script>
     <script src="./lib/sweetalert2.all.min.js"></script>
   </body>
 </html>

@@ -10,8 +10,8 @@ export const AccountModel = {
     };
   },
 
-  getAll() {
-    return db.accounts.toArray();
+  async getAll() {
+    return await db.accounts.toArray();
   },
 
   update(id, data) {
