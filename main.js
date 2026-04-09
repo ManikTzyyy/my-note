@@ -3,6 +3,8 @@ import { accountServices } from "./services/accountService.js";
 import { render } from "./utils/render.js";
 import { myUtils } from "./utils/utils.js";
 
+import { db } from "./db/database.js";
+
 const datePlace = document.getElementById("dateNow");
 const btnRefresh = document.getElementById("refresh-btn");
 let isRefreshing = false;
@@ -14,13 +16,15 @@ async function init() {
     month: "short",
     year: "numeric",
   });
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker
-      .register("/sw.js")
-      .then(() => console.log("SW registered"))
-      .catch((err) => console.log("SW error", err));
-  }
+  // if ("serviceWorker" in navigator) {
+  //   navigator.serviceWorker
+  //     .register("/sw.js")
+  //     .then(() => console.log("SW registered"))
+  //     .catch((err) => console.log("SW error", err));
+  // }
   refresh();
+  // await db.delete()
+  // await db.open()
 }
 
 btnRefresh.addEventListener("click", async () => {
@@ -42,9 +46,11 @@ async function refresh() {
     TransactionService.getAll(),
   ]);
 
+
   const dataTrc = myUtils.getAllWithAcc(trcList, accList);
 
-  // 🔥 render ulang
+
+
   await render.initAccCard(accList, containerAcc, false);
   await render.initTrcRow(dataTrc, containerTbl, false);
 
@@ -52,3 +58,8 @@ async function refresh() {
 }
 
 init();
+
+
+particlesJS.load('particles-js', './assets/particles.json', function() {
+  console.log('callback - particles.js config loaded');
+});

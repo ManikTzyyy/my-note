@@ -17,3 +17,14 @@ input {
   -ms-transition: none !important;
   -o-transition: none !important;
 }
+
+.select-acc:disabled {
+  border: rgb(0, 0, 0);
+  opacity: 0.5;
+
+}
+.select-acc:disabled:hover{
+  cursor: not-allowed;
+}
+
+

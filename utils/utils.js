@@ -53,6 +53,7 @@ export const myUtils = {
   },
 
   getAllWithAcc(trcData, accData) {
+  
     const accMap = Object.fromEntries(accData.map((a) => [a.id, a]));
     return trcData.map((trx) => ({
       ...trx,
@@ -66,6 +67,14 @@ export const myUtils = {
       ...trc,
       acc_from: !isIncome ? acc : null,
       acc_to: isIncome ? acc : null,
+    };
+  },
+
+  getTrcWithAccTrf(trc, accfrom, accto) {
+    return {
+      ...trc,
+      acc_from: accfrom,
+      acc_to: accto,
     };
   },
 };

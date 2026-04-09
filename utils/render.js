@@ -30,26 +30,44 @@ function cardTemplate(data) {
 }
 
 function tableRowTemplate(data) {
+  let statusIcon;
+  let ic_clr;
+  let ic_bg;
+  if (data.status == "in") {
+    statusIcon = "arrow-up";
+    ic_clr = "green";
+    ic_bg = "green";
+  } else if (data.status == "ex") {
+    statusIcon = "arrow-down";
+    ic_clr = "red";
+    ic_bg = "red";
+  } else if (data.status == "trf") {
+    statusIcon = "arrow-right-left";
+    ic_clr = "blue";
+    ic_bg = "blue";
+  }
+
   return `
   <tr class="table-row text-xs">
     <td class="whitespace-nowrap">${data.date}</td>
     <td class="whitespace-nowrap">${data.desc}</td>
     <td>
-      <div class="w-6 h-6 flex justify-center items-center rounded-full ${
-        data.status != "in"
-          ? "bg-red-100 text-red-900"
-          : "bg-green-100 text-green-900"
-      }">
-        <i data-lucide="${
-          data.status != "in" ? "arrow-up" : "arrow-down"
-        }" class="w-4 h-4"></i>
+      <div class="w-6 h-6 flex justify-center items-center rounded-full bg-${ic_bg}-100 text-${ic_clr}-900">
+        <i data-lucide="${statusIcon}" class="w-4 h-4"></i>
       </div>
     </td>
     <td>
     ${
-      data.status == "ex"
-        ? `<div class="flex bg-${data.bg_clr}-100 text-${
-            data.ic_clr
+      data.status == "trf"
+        ? `<div class="flex bg-${data.bg_from}-100 text-${
+            data.clr_from
+          }-900 px-3 py-1 gap-1 rounded-full items-center w-fit">
+        <i data-lucide="${data.acc_from?.icon || ""}" class="w-4 h-4"></i>
+        <p>${data.acc_from?.name}</p>
+      </div>`
+        : data.status == "ex"
+        ? `<div class="flex bg-${data.bg_from}-100 text-${
+            data.clr_from
           }-900 px-3 py-1 gap-1 rounded-full items-center w-fit">
         <i data-lucide="${data.acc_from?.icon || ""}" class="w-4 h-4"></i>
         <p>${data.acc_from?.name}</p>
@@ -59,9 +77,16 @@ function tableRowTemplate(data) {
     </td>
     <td>
    ${
-     data.status == "in"
-       ? `<div class="flex bg-${data.bg_clr}-100 text-${
-           data.ic_clr
+     data.status == "trf"
+       ? `<div class="flex bg-${data.bg_to}-100 text-${
+           data.clr_to
+         }-900 px-3 py-1 gap-1 rounded-full items-center w-fit">
+        <i data-lucide="${data.acc_to?.icon || ""}" class="w-4 h-4"></i>
+        <p>${data.acc_to?.name}</p>
+      </div>`
+       : data.status == "in"
+       ? `<div class="flex bg-${data.bg_to}-100 text-${
+           data.clr_to
          }-900 px-3 py-1 gap-1 rounded-full items-center w-fit">
         <i data-lucide="${data.acc_to?.icon || ""}" class="w-4 h-4"></i>
         <p>${data.acc_to?.name}</p>

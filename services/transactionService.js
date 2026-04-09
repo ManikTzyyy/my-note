@@ -8,8 +8,10 @@ export const TransactionService = {
     from_account_id,
     to_account_id,
     amount,
-    bg_clr,
-    ic_clr,
+    bg_from,
+    clr_from,
+    bg_to,
+    clr_to,
     isIncome
   ) {
     let status = isIncome ? "in" : "ex";
@@ -34,8 +36,49 @@ export const TransactionService = {
       from_account_id: isIncome ? null : from_account_id,
       to_account_id: isIncome ? to_account_id : null,
       amount: amount,
-      bg_clr: bg_clr,
-      ic_clr: ic_clr,
+      bg_from: bg_from,
+      clr_from: clr_from,
+      bg_to: bg_to,
+      clr_to: clr_to,
+      created_at: new Date(),
+    });
+  },
+
+  async createTransfer(
+    date,
+    desc,
+    from_account_id,
+    to_account_id,
+    amount,
+    bg_from,
+    clr_from,
+    bg_to,
+    clr_to,
+    type
+  ) {
+    const accFrom = await db.accounts.get(from_account_id);
+    const accTo = await db.accounts.get(to_account_id);
+
+    const [updateFrom, updateTo] = await Promise.all([
+      db.accounts.update(accFrom, {
+        balance: accFrom.balance - amount,
+      }),
+      db.accounts.update(accTo, {
+        balance: accTo.balance + amount,
+      }),
+    ]);
+
+    return await TransactionModel.create({
+      date: date,
+      desc: desc,
+      status: type,
+      from_account_id: from_account_id,
+      to_account_id: to_account_id,
+      amount: amount,
+      bg_from: bg_from,
+      clr_from: clr_from,
+      bg_to: bg_to,
+      clr_to: clr_to,
       created_at: new Date(),
     });
   },
@@ -59,6 +102,20 @@ export const TransactionService = {
         balance: acc.balance + amount,
       });
     }
+    return await TransactionModel.delete(id);
+  },
+
+  async deleteTrfType(id, amount, from, to) {
+    const accFrom = await db.accounts.get(from);
+    const accTo = await db.accounts.get(to);
+    const [updateFrom, updateTo] = await Promise.all([
+      db.accounts.update(from, {
+        balance: accFrom.balance + amount,
+      }),
+      db.accounts.update(to, {
+        balance: accTo.balance - amount,
+      }),
+    ]);
     return await TransactionModel.delete(id);
   },
 

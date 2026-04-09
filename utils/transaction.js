@@ -19,17 +19,26 @@ document.addEventListener("DOMContentLoaded", () => {
   myUtils.formatedValue(valuetrcIn);
 
   let isIncome = null;
+  let type;
 
   document.addEventListener("click", async (e) => {
     const btnInc = e.target.closest("#btn-inc");
     const btnExp = e.target.closest("#btn-expense");
+    const btnTrc = e.target.closest("#btn-trf");
 
     const btnDltTrc = e.target.closest("#btn-delete-trc");
 
     if (btnInc) {
-      isIncome = await openTrcPopUp(true);
+      type = "inc";
+      await openTrcPopUp(type);
+      isIncome = true;
     } else if (btnExp) {
-      isIncome = await openTrcPopUp(false);
+      type = "exp";
+      await openTrcPopUp(type);
+      isIncome = false;
+    } else if (btnTrc) {
+      type = "trf";
+      await openTrcPopUp(type);
     }
 
     if (btnDltTrc) {
@@ -40,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let idAccToEdit =
         data.status == "in" ? data.to_account_id : data.from_account_id;
 
-      let type = data.status == "in" ? true : false;
+      let type = data.status;
 
       Swal.fire({
         title: `Delete this Trancation?`,
@@ -49,18 +58,47 @@ document.addEventListener("DOMContentLoaded", () => {
         showCancelButton: true,
       }).then(async (res) => {
         if (res.isConfirmed) {
-          await TransactionService.delete(
-            idTrc,
-            idAccToEdit,
-            data.amount,
-            type
-          );
+          try {
+            if (type !== "trf") {
+              const isIncome = type === "in";
 
-          const acc = await accountServices.findById(idAccToEdit);
-          if (acc) {
-            myUtils.updateCardBalance(idAccToEdit, acc.balance);
+              await TransactionService.delete(
+                idTrc,
+                idAccToEdit,
+                data.amount,
+                isIncome
+              );
+
+              const acc = await accountServices.findById(idAccToEdit);
+              if (acc) {
+                myUtils.updateCardBalance(idAccToEdit, acc.balance);
+              }
+            } else {
+              const accIDTo = data.to_account_id;
+              const accIDfrom = data.from_account_id;
+
+              await TransactionService.deleteTrfType(
+                idTrc,
+                data.amount,
+                accIDfrom,
+                accIDTo
+              );
+
+              const [updatedFrom, updatedTo] = await Promise.all([
+                accountServices.findById(accIDfrom),
+                accountServices.findById(accIDTo),
+              ]);
+
+              await Promise.all([
+                myUtils.updateCardBalance(updatedFrom.id, updatedFrom.balance),
+                myUtils.updateCardBalance(updatedTo.id, updatedTo.balance),
+              ]);
+            }
+          } catch (error) {
+            console.log(error);
+          } finally {
+            btnDltTrc.closest(".table-row")?.remove();
           }
-          btnDltTrc.closest(".table-row")?.remove();
         }
       });
     }
@@ -84,33 +122,77 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const acc = await accountServices.findById(
-        isIncome ? accIDTo : accIDfrom
-      );
-
-      const res = await TransactionService.createTrc(
-        dateTrcValue,
-        descTrcValue,
-        accIDfrom,
-        accIDTo,
-        amountTrcValue,
-        acc.bg_clr,
-        acc.ic_clr,
-        isIncome
-      );
-
-      const createObj = await myUtils.getTrcWithAcc(res, acc, isIncome);
       btnSaveTrc.disabled = true;
+      if (type != "trf") {
+        const acc = await accountServices.findById(
+          isIncome ? accIDTo : accIDfrom
+        );
 
-      render.initTrcRow(createObj, containerTbl, true);
+        const res = await TransactionService.createTrc(
+          dateTrcValue,
+          descTrcValue,
+          accIDfrom,
+          accIDTo,
+          amountTrcValue,
+          isIncome ? null : acc.bg_clr,
+          isIncome ? null : acc.ic_clr,
+          isIncome ? acc.bg_clr : null,
+          isIncome ? acc.ic_clr : null,
+          isIncome
+        );
+
+        const createObj = await myUtils.getTrcWithAcc(res, acc, isIncome);
+
+        render.initTrcRow(createObj, containerTbl, true);
+      } else {
+        const accFrom = await accountServices.findById(accIDfrom);
+        const accTo = await accountServices.findById(accIDTo);
+
+        if (accIDfrom == accIDTo) {
+          Swal.fire({
+            title: `Account cannot be same refrence!`,
+            icon: "warning",
+            confirmButtonText: "ok!",
+          });
+
+          return;
+        } else {
+          const res = await TransactionService.createTransfer(
+            dateTrcValue,
+            descTrcValue,
+            accIDfrom,
+            accIDTo,
+            amountTrcValue,
+            accFrom.bg_clr,
+            accFrom.ic_clr,
+            accTo.bg_clr,
+            accTo.ic_clr,
+            "trf"
+          );
+
+          const createObj = await myUtils.getTrcWithAccTrf(res, accFrom, accTo);
+
+          console.log(createObj);
+          render.initTrcRow(createObj, containerTbl, true);
+        }
+      }
     } catch (error) {
       console.log(error);
     } finally {
-      const acc = await accountServices.findById(
-        isIncome ? accIDTo : accIDfrom
-      );
+      if (type != "trf") {
+        const acc = await accountServices.findById(
+          isIncome ? accIDTo : accIDfrom
+        );
+        myUtils.updateCardBalance(acc.id, acc.balance);
+      } else {
+        const accFrom = await accountServices.findById(accIDfrom);
+        const accTo = await accountServices.findById(accIDTo);
+        const [from, to] = await Promise.all([
+          myUtils.updateCardBalance(accFrom.id, accFrom.balance),
+          myUtils.updateCardBalance(accTo.id, accTo.balance),
+        ]);
+      }
 
-      myUtils.updateCardBalance(acc.id, acc.balance);
       btnSaveTrc.disabled = false;
       myUtils.isBodyOverflow(false);
       myUtils.resetInput(dateTrcInput, false);
@@ -128,28 +210,45 @@ document.addEventListener("DOMContentLoaded", () => {
   myUtils.removeErrorInput(dateTrcInput);
   myUtils.removeErrorInput(descTrcInput);
 
-  const openTrcPopUp = async (isIncome) => {
+  const openTrcPopUp = async (type) => {
     const accList = await accountServices.getAll();
     addTrcPop.classList.remove("hidden");
     myUtils.isBodyOverflow(true);
-    stsPOP(isIncome, statusPopup);
-    inputTrc(isIncome, boxTrc, accList);
+    stsPOP(type, statusPopup);
+    inputTrc(type, boxTrc, accList);
     myUtils.resetInput(dateTrcInput, false);
     myUtils.resetInput(descTrcInput, false);
     myUtils.resetInput(amountTrcInput, true);
-    return isIncome;
+    return type;
   };
 });
 
-const stsPOP = (isIncome, element) => {
-  const txt = isIncome ? "income" : "Expense";
-  const icon = isIncome ? "arrow-up" : "arrow-down";
-  const bgclr = isIncome ? "bg-green-100" : "bg-red-100";
-  const clr = isIncome ? "text-green-800" : "text-red-800";
+const stsPOP = (type, element) => {
+  let txt;
+  let icon;
+  let bg;
+  let clr;
+
+  if (type == "inc") {
+    txt = "Income";
+    icon = "arrow-up";
+    bg = "bg-green-100";
+    clr = "text-green-800";
+  } else if (type == "exp") {
+    txt = "Expense";
+    icon = "arrow-down";
+    bg = "bg-red-100";
+    clr = "text-red-800";
+  } else if (type == "trf") {
+    txt = "Transfer";
+    icon = "arrow-right-left";
+    bg = "bg-blue-100";
+    clr = "text-blue-800";
+  }
 
   element.innerHTML = "Add New Transaction";
   const html = `<span
-              class="flex gap-1 text-xs justify-center items-center px-2 rounded-full  ${bgclr} ${clr}"
+              class="flex gap-1 text-xs justify-center items-center px-2 rounded-full  ${bg} ${clr}"
               >${txt}<i data-lucide="${icon}" class="w-3 h-3"></i>
             </span>`;
 
@@ -157,41 +256,49 @@ const stsPOP = (isIncome, element) => {
   lucide.createIcons();
 };
 
-const inputTrc = (isIncome, element, data) => {
+const inputTrc = (type, element, data) => {
   const acc = data
     .map((i) => {
       return `<option value="${i.id}">${i.name}</option>`;
     })
     .join("");
 
-  const html = ` <div class="text-xs flex flex-col mb-2 ${
-    isIncome ? "text-gray-200" : ""
-  }">
+  const html = ` <div class="text-xs flex flex-col mb-2">
           <label for="acc-ref-from">From Acc</label>
           <select
             name="acc-ref-from"
             id="acc-ref-from"
-            class="border px-2 py-1 rounded-sm focus:outline-none text-sm" ${
-              isIncome ? "disabled" : ""
-            }
+            class="border px-2 py-1 rounded-sm focus:outline-none text-sm select-acc" 
           >
             ${acc}
           </select>
         </div>
 
-        <div class="text-xs flex flex-col mb-2 ${
-          !isIncome ? "text-gray-200" : ""
-        }">
+        <div class="text-xs flex flex-col mb-2">
           <label for="acc-ref-to">To Acc</label>
           <select
             name="acc-ref-to"
             id="acc-ref-to"
-            class="border px-2 py-1 rounded-sm focus:outline-none text-sm"
-            ${!isIncome ? "disabled" : ""}
+            class="border px-2 py-1 rounded-sm focus:outline-none text-sm select-acc"
+          
           >
             ${acc}
           </select>
         </div>`;
 
   element.innerHTML = html;
+
+  const accRefFrom = document.getElementById("acc-ref-from");
+  const accRefTo = document.getElementById("acc-ref-to");
+
+  if (type == "inc") {
+    accRefFrom.disabled = true;
+    accRefTo.disabled = false;
+  } else if (type == "exp") {
+    accRefFrom.disabled = false;
+    accRefTo.disabled = true;
+  } else if (type == "trf") {
+    accRefFrom.disabled = false;
+    accRefTo.disabled = false;
+  }
 };
