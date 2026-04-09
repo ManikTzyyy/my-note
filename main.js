@@ -16,12 +16,12 @@ async function init() {
     month: "short",
     year: "numeric",
   });
-  // if ("serviceWorker" in navigator) {
-  //   navigator.serviceWorker
-  //     .register("/sw.js")
-  //     .then(() => console.log("SW registered"))
-  //     .catch((err) => console.log("SW error", err));
-  // }
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("/sw.js")
+      .then(() => console.log("SW registered"))
+      .catch((err) => console.log("SW error", err));
+  }
   refresh();
   // await db.delete()
   // await db.open()
