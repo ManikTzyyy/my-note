@@ -48,8 +48,14 @@ async function refresh() {
 
 
   const dataTrc = myUtils.getAllWithAcc(trcList, accList);
+  const elAsset = document.getElementById("ttl-assets")
+  const totalBalance = accList.reduce((acc, item)=>{
+    return acc + item.balance
+  }, 0)
 
+  const money = myUtils.formatMoney(totalBalance)
 
+  elAsset.textContent = `IDR ${money}`
 
   await render.initAccCard(accList, containerAcc, false);
   await render.initTrcRow(dataTrc, containerTbl, false);
@@ -61,5 +67,5 @@ init();
 
 
 particlesJS.load('particles-js', './assets/particles.json', function() {
-  console.log('callback - particles.js config loaded');
+  
 });
