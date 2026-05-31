@@ -9,8 +9,8 @@ function cardTemplate(data) {
         <div class="bg-${
           data.bg_clr
         }-100 w-6 h-6 flex justify-center items-center rounded-full text-${
-    data.ic_clr
-  }-900">
+          data.ic_clr
+        }-900">
           <i data-lucide="${data.icon}" class="w-4 h-4"></i>
         </div>
         <div>
@@ -66,13 +66,13 @@ function tableRowTemplate(data) {
         <p>${data.acc_from?.name}</p>
       </div>`
         : data.status == "ex"
-        ? `<div class="flex bg-${data.bg_from}-100 text-${
-            data.clr_from
-          }-900 px-3 py-1 gap-1 rounded-full items-center w-fit">
+          ? `<div class="flex bg-${data.bg_from}-100 text-${
+              data.clr_from
+            }-900 px-3 py-1 gap-1 rounded-full items-center w-fit">
         <i data-lucide="${data.acc_from?.icon || ""}" class="w-4 h-4"></i>
         <p>${data.acc_from?.name}</p>
       </div>`
-        : "-"
+          : "-"
     }
     </td>
     <td>
@@ -85,13 +85,13 @@ function tableRowTemplate(data) {
         <p>${data.acc_to?.name}</p>
       </div>`
        : data.status == "in"
-       ? `<div class="flex bg-${data.bg_to}-100 text-${
-           data.clr_to
-         }-900 px-3 py-1 gap-1 rounded-full items-center w-fit">
+         ? `<div class="flex bg-${data.bg_to}-100 text-${
+             data.clr_to
+           }-900 px-3 py-1 gap-1 rounded-full items-center w-fit">
         <i data-lucide="${data.acc_to?.icon || ""}" class="w-4 h-4"></i>
         <p>${data.acc_to?.name}</p>
       </div>`
-       : "-"
+         : "-"
    }
     </td>
     <td class="whitespace-nowrap">IDR ${myUtils.formatMoney(data.amount)}</td>
@@ -141,6 +141,7 @@ export const render = {
       searching: true,
       ordering: true,
       scrollX: true,
+      order: [[0, "desc"]],
     });
 
     table.on("draw", function () {

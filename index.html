@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -12,28 +12,28 @@
   </head>
   <body class="relative" id="body">
     <div
-      class="flex z-10 bg-opacity-50 gap-2 justify-center fixed bottom-0 w-full py-3 bg-gray-100 rounded-t-3xl text-xs"
+      class="flex z-10 bg-opacity-50 gap-2 justify-center fixed bottom-0 w-full py-3 bg-gray-100 rounded-t-3xl text-sm"
     >
       <button
         class="bg-white flex items-center justify-center px-3 py-1 rounded-full gap-2 text-blue-800 border"
         id="btn-trf"
       >
         Trf
-        <i data-lucide="arrow-right-left" class="w-3 h-3"></i>
+        <i data-lucide="arrow-right-left" class="w-4 h-4"></i>
       </button>
       <button
         class="bg-white border flex items-center justify-center px-3 py-1 rounded-full gap-2 text-green-800"
         id="btn-inc"
       >
         Inc
-        <i data-lucide="banknote-arrow-up" class="w-3 h-3"></i>
+        <i data-lucide="banknote-arrow-up" class="w-4 h-4"></i>
       </button>
       <button
         class="bg-white border flex items-center justify-center px-3 py-1 rounded-full gap-2 text-red-800"
         id="btn-expense"
       >
         Exp
-        <i data-lucide="banknote-arrow-down" class="w-3 h-3"></i>
+        <i data-lucide="banknote-arrow-down" class="w-4 h-4"></i>
       </button>
     </div>
 
@@ -49,14 +49,24 @@
         <p class="text-sm whitespace-nowrap" id="dateNow"></p>
       </div>
 
-      <button
-        class="bg-blue-100 rounded-full drop-shadow-lg w-10 h-10 z-10 flex justify-center items-center text-blue-900"
-        id="refresh-btn"
-      >
-        <i data-lucide="refresh-ccw"></i>
-      </button>
+      <div class="flex gap-2">
+        <button
+          class="bg-blue-100 rounded-full drop-shadow-lg w-10 h-10 z-10 flex justify-center items-center text-blue-900"
+          id="refresh-btn"
+        >
+          <i data-lucide="refresh-ccw"></i>
+        </button>
+
+         <button
+          class="bg-green-100 rounded-full drop-shadow-lg w-10 h-10 z-10 flex justify-center items-center text-green-900"
+          id="download"
+        >
+          <i data-lucide="download"></i>
+        </button>
+      </div>
     </div>
-    <br /><br /><br /> <br>
+    <br /><br /><br />
+    <br />
 
     <!-- content -->
     <div class="p-5">
@@ -82,7 +92,7 @@
       <!-- End account section -->
 
       <!-- transaction section -->
-      <div class="">
+      <div class="py-10">
         <div class="flex justify-between items-center border-b pb-2">
           <div class="flex gap-3 items-center">
             <div

@@ -1,3 +1,5 @@
+import { AccountModel } from "../models/accountModel.js";
+import { TransactionModel } from "../models/transactionModel.js";
 const body = document.querySelector("#body");
 export const myUtils = {
   inputValidator(input) {
@@ -53,7 +55,6 @@ export const myUtils = {
   },
 
   getAllWithAcc(trcData, accData) {
-  
     const accMap = Object.fromEntries(accData.map((a) => [a.id, a]));
     return trcData.map((trx) => ({
       ...trx,
@@ -76,5 +77,14 @@ export const myUtils = {
       acc_from: accfrom,
       acc_to: accto,
     };
+  },
+
+  async exportData() {
+    const dataToExp = {
+      acc: await AccountModel.getAll(),
+      trc: await TransactionModel.getAll(),
+    };
+
+    console.log(dataToExp);
   },
 };
