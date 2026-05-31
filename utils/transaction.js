@@ -172,7 +172,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const createObj = await myUtils.getTrcWithAccTrf(res, accFrom, accTo);
 
-          console.log(createObj);
           render.initTrcRow(createObj, containerTbl, true);
         }
       }
