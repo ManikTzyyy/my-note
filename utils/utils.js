@@ -1,6 +1,31 @@
 import { AccountModel } from "../models/accountModel.js";
 import { TransactionModel } from "../models/transactionModel.js";
 const body = document.querySelector("#body");
+
+const menuBtn = document.getElementById("menu-btn") || null
+const menuDiv = document.getElementById("menu-div") || null
+
+if (menuBtn == null || menuDiv == null) {
+
+} else {
+  menuBtn.addEventListener("click", () => {
+    menuDiv.classList.remove("hidden")
+  })
+
+  document.addEventListener("click", (e) => {
+    if (
+      !menuDiv.contains(e.target) &&
+      !menuBtn.contains(e.target)
+
+    ) {
+
+      menuDiv.classList.add("hidden");
+    }
+  });
+}
+
+
+
 export const myUtils = {
   inputValidator(input) {
     if (!input.value) {
@@ -81,10 +106,53 @@ export const myUtils = {
 
   async exportData() {
     const dataToExp = {
-      acc: await AccountModel.getAll(),
-      trc: await TransactionModel.getAll(),
+      acc: (await AccountModel.getAll()).map(
+        ({ bg_clr, ic_clr, ...acc }) => acc
+      ),
+
+      trc: (await TransactionModel.getAll()).map(
+        ({ bg_from, clr_from, bg_to, clr_to, ...trc }) => trc
+      ),
     };
 
-    console.log(dataToExp);
+    return dataToExp;
   },
+
+  formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  },
+
+  extratDataToChart(array) {
+    const grouped ={}
+    array.forEach((trc) => {
+      if (!["in", "ex"].includes(trc.status)) return;
+
+      if (!grouped[trc.date]) {
+        grouped[trc.date] = {
+          date: trc.date,
+          income: 0,
+          expense: 0,
+        };
+      }
+
+      if (trc.status === "in") {
+        grouped[trc.date].income += trc.amount;
+      }
+
+      if (trc.status === "ex") {
+        grouped[trc.date].expense += trc.amount;
+      }
+    });
+
+    const chartData = Object.values(grouped).sort(
+      (a, b) => new Date(a.date) - new Date(b.date)
+    );
+
+    return chartData
+  }
+
 };

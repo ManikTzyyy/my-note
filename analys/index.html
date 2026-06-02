@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Finance - Analys</title>
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/tailwind.min.css" />
+    <link rel="stylesheet" href="/assets/css/datatables.min.css" />
+    <link rel="stylesheet" href="/assets/css/sweetalert2.min.css" />
+    <link rel="manifest" href="/manifest.json" />
+</head>
+
+<body class="relative" id="body">
+
+    <div class="fixed z-10 w-screen nav flex justify-between items-center bg-white p-5 drop-shadow-sm filter">
+        <div class="absolute bottom-0" id="particles-js"></div>
+        <div class="">
+            <div class="">
+                <p class="text-xs text-gray-500">assets</p>
+                <p id="ttl-assets">IDR 0</p>
+            </div>
+            <p class="text-sm whitespace-nowrap" id="dateNow"></p>
+        </div>
+
+        <div class="flex gap-2">
+            <a href="/"
+                class="bg-gray-100 rounded-full drop-shadow-lg w-10 h-10 z-10 flex justify-center items-center text-gray-900">
+                <i data-lucide="home"></i>
+            </a>
+        </div>
+    </div>
+    <br /><br /><br />
+    <br />
+
+
+
+    <!-- content -->
+    <div class="p-5">
+        <div class="flex flex-col gap-3">
+            <div class="flex gap-2 flex-">
+                <div class="flex flex-col">
+                    <label for="start" class="text-sm text-gray-500">start date</label>
+                    <input type="date" name="start" id="start" class="border px-2 rounded-full text-sm">
+                </div>
+                <div class="flex flex-col">
+                    <label for="end" class="text-sm text-gray-500">end date</label>
+                    <input type="date" name="end" id="end" class="border px-2 rounded-full text-sm">
+                </div>
+            </div>
+
+            <div class="flex gap-2 text-sm gap-4">
+                <label class="flex gap-2">
+                    <div
+                        class="w-4 h-4 flex justify-center items-center rounded-full bg-green-100 text-green-900">
+                        <i data-lucide="arrow-up" class="w-3 h-3"></i>
+                    </div>
+                    <input type="checkbox" id="cb-income" checked>
+                    
+                </label>
+
+                <label class="flex gap-2">
+                    <div
+                        class="w-4 h-4 flex justify-center items-center rounded-full bg-red-100 text-red-900">
+                        <i data-lucide="arrow-down" class="w-3 h-3"></i>
+                    </div>
+                    <input type="checkbox" id="cb-expense" checked>
+                    
+                </label>
+            </div>
+
+            <button class="px-4 py-0.5 bg-blue-400 rounded-full text-white" id="submit-data">submit</button>
+        </div>
+
+        <br>
+        <canvas id="myChart"></canvas>
+    </div>
+
+
+
+    <script src="/lib/datatables.min.js"></script>
+    <script src="/lib/chart.umd.min.js"></script>
+    <script src="/lib/lucide.min.js"></script>
+    <script src="/lib/particles.min.js"></script>
+    <script src="/lib/sweetalert2.all.min.js"></script>
+    <script type="module" src="./script.js"></script>
+    <script type="module" src="/utils/utils.js"></script>
+</body>
+
+</html>

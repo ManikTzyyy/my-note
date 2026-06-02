@@ -3,7 +3,9 @@ import { accountServices } from "./services/accountService.js";
 import { render } from "./utils/render.js";
 import { myUtils } from "./utils/utils.js";
 
-import { db } from "./db/database.js";
+
+
+// import { db } from "./db/database.js";
 
 const datePlace = document.getElementById("dateNow");
 const btnRefresh = document.getElementById("refresh-btn");
@@ -18,12 +20,12 @@ async function init() {
     month: "short",
     year: "numeric",
   });
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker
-      .register("/sw.js")
-      .then(() => console.log("SW registered"))
-      .catch((err) => console.log("SW error", err));
-  }
+  // if ("serviceWorker" in navigator) {
+  //   navigator.serviceWorker
+  //     .register("/sw.js")
+  //     .then(() => console.log("SW registered"))
+  //     .catch((err) => console.log("SW error", err));
+  // }
   refresh();
   // await db.delete()
   // await db.open()
@@ -36,6 +38,7 @@ btnRefresh.addEventListener("click", async () => {
 async function refresh() {
   const containerAcc = document.getElementById("container-accounts");
   const containerTbl = document.getElementById("trc-body");
+
 
   if ($.fn.DataTable.isDataTable("#tableTrans")) {
     $("#tableTrans").DataTable().clear().destroy();
@@ -62,8 +65,7 @@ async function refresh() {
   await render.initTrcRow(dataTrc, containerTbl, false);
 
   btnDownload.addEventListener("click", async () => {
-    const data = myUtils.exportData();
-
+    const data = await myUtils.exportData();
     const blob = new Blob([JSON.stringify(data, null, 2)], {
       type: "application/json",
     });
@@ -83,4 +85,4 @@ async function refresh() {
 
 init();
 
-particlesJS.load("particles-js", "./assets/particles.json", function () {});
+particlesJS.load("particles-js", "./assets/particles.json", function () { });

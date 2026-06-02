@@ -26,4 +26,8 @@ export const TransactionModel = {
       .filter((trc) => trc.from_account_id === accId || trc.to_account_id === accId)
       .toArray();
   },
+
+  async getDataFromRange(startDate, endDate) {
+    return await db.transactions.where("date").between(startDate, endDate, true, true).toArray()
+  }
 };

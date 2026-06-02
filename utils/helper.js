@@ -24,6 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
     lucide.createIcons();
     iconBox.classList.add("hidden");
   });
+
+
+  
 });
 
 function renderIcons(filter = "") {
@@ -58,7 +61,7 @@ const textPicker = document.getElementById("textPicker");
 colors.forEach((color) => {
   const bgItem = document.createElement("div");
   bgItem.className = `w-6 h-6 rounded-md cursor-pointer bg-${color}-100 select-bg-icon`;
-  bgItem.dataset.color = color; 
+  bgItem.dataset.color = color;
 
   const textItem = document.createElement("div");
   textItem.className = `w-6 h-6 rounded-md cursor-pointer bg-${color}-900 select-clr-icon`;
