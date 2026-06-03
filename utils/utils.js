@@ -126,8 +126,8 @@ export const myUtils = {
     return `${year}-${month}-${day}`;
   },
 
-  extratDataToChart(array) {
-    const grouped ={}
+  extractDataToChart(array) {
+    const grouped = {}
     array.forEach((trc) => {
       if (!["in", "ex"].includes(trc.status)) return;
 
@@ -153,6 +153,19 @@ export const myUtils = {
     );
 
     return chartData
+  },
+
+  extractCashFlow(array) {
+    let balance = 0
+    return array.map(item => {
+      balance += item.income;
+      balance -= item.expense;
+
+      return {
+        date: item.date,
+        balance,
+      };
+    });
   }
 
 };

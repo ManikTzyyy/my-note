@@ -60,8 +60,14 @@
   <br />
 
   <div class="fixed flex flex-col bg-white py-2 px-4 border gap-2 text-right right-10 top-14 z-10 hidden" id="menu-div">
+    <a href="./analys/" class="bg-gray-100 px-3 rounded-full">Analys</a>
     <a href="#" id="download" class="bg-gray-100 px-3 rounded-full">Export Data</a>
-    <a href="./analys/"  class="bg-gray-100 px-3 rounded-full">Analys</a>
+    <div>
+      <input type="file" id="import-file" accept=".json" hidden>
+      <a href="#" id="btn-import" class="bg-gray-100 px-3 rounded-full">
+        Import Data
+      </a>
+    </div>
   </div>
 
   <!-- content -->
