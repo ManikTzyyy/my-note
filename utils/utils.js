@@ -105,14 +105,19 @@ export const myUtils = {
   },
 
   async exportData() {
-    const dataToExp = {
-      acc: (await AccountModel.getAll()).map(
-        ({ bg_clr, ic_clr, ...acc }) => acc
-      ),
+    // const dataToExp = {
+    //   acc: (await AccountModel.getAll()).map(
+    //     ({ bg_clr, ic_clr, ...acc }) => acc
+    //   ),
 
-      trc: (await TransactionModel.getAll()).map(
-        ({ bg_from, clr_from, bg_to, clr_to, ...trc }) => trc
-      ),
+    //   trc: (await TransactionModel.getAll()).map(
+    //     ({ bg_from, clr_from, bg_to, clr_to, ...trc }) => trc
+    //   ),
+    // };
+    // export full
+    const dataToExp = {
+      acc: await AccountModel.getAll(),
+      trc: await TransactionModel.getAll()
     };
 
     return dataToExp;
