@@ -1,7 +1,6 @@
 import { myUtils } from "./utils.js";
 import { accountServices } from "../services/accountService.js";
 import { render } from "./render.js";
-import { TransactionService } from "../services/transactionService.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const addAccPopUp = document.querySelector("#acc-popup");
@@ -71,12 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }).then(async (res) => {
       if (res.isConfirmed) {
         await accountServices.delete(idAcc);
-        btnDeleteAcc.closest(".card")?.remove();
-
-        const accList = await accountServices.getAll();
-        const trcList = await TransactionService.getAll();
-        const dataTrc = myUtils.getAllWithAcc(trcList, accList);
-        render.initTrcRow(dataTrc, containerTbl, false);
+        window.dispatchEvent(new Event("dashboard:refresh"));
       }
     });
   });

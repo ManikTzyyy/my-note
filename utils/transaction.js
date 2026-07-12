@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const dateTrcInput = document.getElementById("trnc-date");
   const amountTrcInput = document.getElementById("trc-value");
   const descTrcInput = document.getElementById("trnc-desc");
-  const containerTbl = document.getElementById("trc-body");
 
   const btnSaveTrc = document.getElementById("btn-save-trc");
 
@@ -69,10 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 isIncome
               );
 
-              const acc = await accountServices.findById(idAccToEdit);
-              if (acc) {
-                myUtils.updateCardBalance(idAccToEdit, acc.balance);
-              }
             } else {
               const accIDTo = data.to_account_id;
               const accIDfrom = data.from_account_id;
@@ -84,20 +79,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 accIDTo
               );
 
-              const [updatedFrom, updatedTo] = await Promise.all([
-                accountServices.findById(accIDfrom),
-                accountServices.findById(accIDTo),
-              ]);
-
-              await Promise.all([
-                myUtils.updateCardBalance(updatedFrom.id, updatedFrom.balance),
-                myUtils.updateCardBalance(updatedTo.id, updatedTo.balance),
-              ]);
             }
+            window.dispatchEvent(new Event("dashboard:refresh"));
           } catch (error) {
             console.log(error);
-          } finally {
-            btnDltTrc.closest(".table-row")?.remove();
           }
         }
       });
@@ -141,9 +126,6 @@ document.addEventListener("DOMContentLoaded", () => {
           isIncome
         );
 
-        const createObj = await myUtils.getTrcWithAcc(res, acc, isIncome);
-
-        render.initTrcRow(createObj, containerTbl, true);
       } else {
         const accFrom = await accountServices.findById(accIDfrom);
         const accTo = await accountServices.findById(accIDTo);
@@ -170,9 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
             "trf"
           );
 
-          const createObj = await myUtils.getTrcWithAccTrf(res, accFrom, accTo);
-
-          render.initTrcRow(createObj, containerTbl, true);
         }
       }
     } catch (error) {
@@ -198,6 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
       myUtils.resetInput(descTrcInput, false);
       myUtils.resetInput(amountTrcInput, true);
       addTrcPop.classList.add("hidden");
+      window.dispatchEvent(new Event("dashboard:refresh"));
     }
   });
 

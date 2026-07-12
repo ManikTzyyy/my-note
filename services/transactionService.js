@@ -2,6 +2,34 @@ import { db } from "../db/database.js";
 import { TransactionModel } from "../models/transactionModel.js";
 
 export const TransactionService = {
+  formatLocalDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  },
+
+  getCurrentMonthRange() {
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    return {
+      startDate: this.formatLocalDate(firstDay),
+      endDate: this.formatLocalDate(lastDay),
+    };
+  },
+
+  async getCurrentMonth() {
+    const { startDate, endDate } = this.getCurrentMonthRange();
+    return await TransactionModel.getDataFromRange(startDate, endDate);
+  },
+
+  async getByRange(startDate, endDate) {
+    return await TransactionModel.getDataFromRange(startDate, endDate);
+  },
+
   async createTrc(
     date,
     desc,

@@ -37,7 +37,7 @@
     <div class="">
       <div class="">
         <p class="text-xs text-gray-500">assets</p>
-        <p id="ttl-assets">IDR 0</p>
+        <p id="ttl-assets" class="max-w-[11rem] break-words whitespace-normal text-sm leading-4">IDR 0</p>
       </div>
       <p class="text-sm whitespace-nowrap" id="dateNow"></p>
     </div>
@@ -71,7 +71,7 @@
   </div>
 
   <!-- content -->
-  <div class="p-5">
+  <div class="p-2">
     <!-- account section -->
     <div class="">
       <div class="flex justify-between items-center border-b pb-2">
@@ -84,12 +84,12 @@
         <button id="btn-add-acc"><i data-lucide="plus"></i></button>
       </div>
       <!-- content -->
-      <div class="flex flex-wrap gap-3 py-2 items-center justify-center" id="container-accounts"></div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 py-2 items-center justify-center" id="container-accounts"></div>
     </div>
     <!-- End account section -->
 
     <!-- transaction section -->
-    <div class="py-10">
+    <div class="pt-5 pb-12">
       <div class="flex justify-between items-center border-b pb-2">
         <div class="flex gap-3 items-center">
           <div class="bg-yellow-50 w-9 h-9 flex justify-center items-center rounded-full text-yellow-900">
@@ -98,9 +98,21 @@
           <h1>Transactions</h1>
         </div>
       </div>
+      <div class="mt-4 flex items-end gap-3 rounded-2xl border border-slate-200 bg-white/80 p-3 shadow-sm backdrop-blur-sm">
+        <div class="flex min-w-0 flex-1 flex-col gap-1">
+          <label for="filter-month" class="text-base text-slate-500">Month and year</label>
+          <input type="month" id="filter-month" class="w-full border px-3 py-2 rounded-xl text-base" />
+        </div>
+        <button id="btn-filter-trc" class="shrink-0 rounded-xl bg-blue-600 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-blue-700">
+          Filter
+        </button>
+        <button id="btn-reset-filter" class="shrink-0 rounded-xl border border-slate-200 bg-white px-4 py-2 font-medium text-slate-700 transition hover:bg-slate-50">
+          Bulan ini
+        </button>
+      </div>
       <!-- content -->
-      <div class="">
-        <table id="tableTrans" class="display stripe">
+      <div class="mt-4 overflow-x-auto bg-white shadow-sm">
+        <table id="tableTrans" class="display w-full min-w-[900px]">
           <thead>
             <tr class="text-xs font-thin">
               <th>Date</th>
@@ -130,7 +142,7 @@
       </div>
 
       <div class="flex w-full justify-between items-start">
-        <div class="text-xs flex flex-col mb-2 w-full">
+        <div class="text-base flex flex-col mb-2 w-full">
           <label for="name">Select Icon</label>
           <div class="relative">
             <button id="select-icon"
@@ -142,7 +154,7 @@
             <div id="icon-box"
               class="hidden box-icon border-blue-100 p-2 border mt-2 rounded-lg absolute bg-white w-full">
               <input type="search" name="search" id="icon-search" placeholder="search icon"
-                class="border px-2 py-1 rounded-lg focus:outline-none text-sm w-full" />
+                class="border px-2 py-1 rounded-lg focus:outline-none text-base w-full" />
               <div id="container-icon"
                 class="flex flex-wrap pt-2 gap-3 text-blue-900 items-center justify-start max-h-32 overflow-x-scroll">
               </div>
@@ -165,13 +177,13 @@
 
       <div class="text-xs flex flex-col mb-2">
         <label for="name">Account Name</label>
-        <input class="border px-2 py-1 rounded-sm focus:outline-none text-sm" type="text" name="name" id="acc-name"
+        <input class="border px-2 py-1 rounded-sm focus:outline-none text-base" type="text" name="name" id="acc-name"
           placeholder="ex. acumalaka" />
       </div>
 
       <div class="text-xs flex flex-col mb-2">
         <label for="balance">Start Balance</label>
-        <input class="border px-2 py-1 rounded-sm focus:outline-none text-sm" type="text" name="name" id="acc-start"
+        <input class="border px-3 py-2 rounded-xl focus:outline-none text-base" type="text" name="name" id="acc-start"
           value="0" />
       </div>
 
@@ -188,25 +200,25 @@
     id="trc-popup">
     <div class="box w-full h-auto rounded-sm bg-white p-2 m-2" id="popBox">
       <div class="flex justify-between border-b mb-2 py-2">
-        <div class="text-sm flex gap-4 justify-center items-center" id="statusPopup"></div>
+        <div class="text-base flex gap-4 justify-center items-center" id="statusPopup"></div>
         <button id="close-pop-up-trc"><i data-lucide="x"></i></button>
       </div>
 
-      <div class="text-xs flex flex-col mb-2">
+      <div class="text-base flex flex-col mb-2">
         <label for="date">Date</label>
-        <input class="border px-2 py-1 rounded-sm focus:outline-none text-sm" type="date" name="date" id="trnc-date"
+        <input class="border px-2 py-1 rounded-sm focus:outline-none text-base" type="date" name="date" id="trnc-date"
           placeholder="ex. acumalaka" />
       </div>
 
-      <div class="text-xs flex flex-col mb-2">
+      <div class="text-base flex flex-col mb-2">
         <label for="desc">Descriptions</label>
-        <input class="border px-2 py-1 rounded-sm focus:outline-none text-sm" type="text" name="desc" id="trnc-desc"
+        <input class="border px-2 py-1 rounded-sm focus:outline-none text-base" type="text" name="desc" id="trnc-desc"
           placeholder="ex. acumalaka" />
       </div>
 
-      <div class="text-xs flex flex-col mb-2">
+      <div class="text-base flex flex-col mb-2">
         <label for="value">value</label>
-        <input class="border px-2 py-1 rounded-sm focus:outline-none text-sm" type="text" name="value" id="trc-value"
+        <input class="border px-2 py-1 rounded-sm focus:outline-none text-base" type="text" name="value" id="trc-value"
           value="0" />
       </div>
 

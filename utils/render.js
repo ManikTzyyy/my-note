@@ -2,28 +2,20 @@ import { myUtils } from "./utils.js";
 
 function cardTemplate(data) {
   return `
-    <div class="card bg-${data.bg_clr}-50 bg-opacity-25 rounded-lg w-full">
-      <div class="h-10 bg-${
-        data.bg_clr
-      }-50 px-2 py-1 text-xs flex justify-between items-center">
-        <div class="bg-${
-          data.bg_clr
-        }-100 w-6 h-6 flex justify-center items-center rounded-full text-${
-          data.ic_clr
-        }-900">
-          <i data-lucide="${data.icon}" class="w-4 h-4"></i>
+    <div class="card flex h-full w-full flex-col overflow-hidden rounded-lg border border-white/70 bg-white/80 shadow-xs shadow-slate-200/70 backdrop-blur-sm">
+      <div class="flex items-center justify-between gap-2 bg-${data.bg_clr}-50 px-1 py-1 text-xs">
+        <div class="flex min-w-0 items-center gap-2">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-${data.bg_clr}-100 text-${data.ic_clr}-900">
+            <i data-lucide="${data.icon}" class="h-4 w-4"></i>
+          </div>
+          <p class="min-w-0 break-words whitespace-normal text-xs leading-4 text-slate-700">${data.name}</p>
         </div>
-        <div>
-          <button data-acc="${
-            data.id
-          }" class="btn-dlt-acc"><i data-lucide="trash" class="w-4 h-4"></i></button>
-        </div>
+        <button data-acc="${data.id}" class="btn-dlt-acc shrink-0 text-slate-500 transition hover:text-red-500">
+          <i data-lucide="trash" class="h-4 w-4"></i>
+        </button>
       </div>
-      <div class="p-2">
-        <p class="text-xs">${data.name}</p>
-        <div class="flex gap-1 items-center"><span class="text-xs">IDR</span><span id="balance-${
-          data.id
-        }">${myUtils.formatMoney(data.balance)}</span></div>
+      <div class="flex flex-1 flex-col gap-1 p-2">
+       <span id="balance-${data.id}" class="text-sm leading-5 text-slate-900">${myUtils.formatMoney(data.balance)}</span>
       </div>
     </div>
   `;
@@ -48,55 +40,49 @@ function tableRowTemplate(data) {
   }
 
   return `
-  <tr class="table-row text-xs">
-    <td class="whitespace-nowrap">${data.date}</td>
-    <td class="whitespace-nowrap">${data.desc}</td>
+  <tr class="table-row align-top text-sm sm:text-xs">
+    <td class="whitespace-nowrap py-3">${data.date}</td>
+    <td class="whitespace-normal break-words py-3">${data.desc}</td>
     <td>
-      <div class="w-6 h-6 flex justify-center items-center rounded-full bg-${ic_bg}-100 text-${ic_clr}-900">
+      <div class="w-7 h-7 flex justify-center items-center rounded-full bg-${ic_bg}-100 text-${ic_clr}-900">
         <i data-lucide="${statusIcon}" class="w-4 h-4"></i>
       </div>
     </td>
     <td>
-    ${
-      data.status == "trf"
-        ? `<div class="flex bg-${data.bg_from}-100 text-${
-            data.clr_from
-          }-900 px-3 py-1 gap-1 rounded-full items-center w-fit">
+    ${data.status == "trf"
+      ? `<div class="flex bg-${data.bg_from}-100 text-${data.clr_from
+      }-900 px-3 py-1 gap-1 rounded-full items-center w-fit">
         <i data-lucide="${data.acc_from?.icon || ""}" class="w-4 h-4"></i>
         <p>${data.acc_from?.name}</p>
       </div>`
-        : data.status == "ex"
-          ? `<div class="flex bg-${data.bg_from}-100 text-${
-              data.clr_from
-            }-900 px-3 py-1 gap-1 rounded-full items-center w-fit">
+      : data.status == "ex"
+        ? `<div class="flex bg-${data.bg_from}-100 text-${data.clr_from
+        }-900 px-3 py-1 gap-1 rounded-full items-center w-fit">
         <i data-lucide="${data.acc_from?.icon || ""}" class="w-4 h-4"></i>
         <p>${data.acc_from?.name}</p>
       </div>`
-          : "-"
+        : "-"
     }
     </td>
     <td>
-   ${
-     data.status == "trf"
-       ? `<div class="flex bg-${data.bg_to}-100 text-${
-           data.clr_to
-         }-900 px-3 py-1 gap-1 rounded-full items-center w-fit">
+   ${data.status == "trf"
+      ? `<div class="flex bg-${data.bg_to}-100 text-${data.clr_to
+      }-900 px-3 py-1 gap-1 rounded-full items-center w-fit">
         <i data-lucide="${data.acc_to?.icon || ""}" class="w-4 h-4"></i>
         <p>${data.acc_to?.name}</p>
       </div>`
-       : data.status == "in"
-         ? `<div class="flex bg-${data.bg_to}-100 text-${
-             data.clr_to
-           }-900 px-3 py-1 gap-1 rounded-full items-center w-fit">
+      : data.status == "in"
+        ? `<div class="flex bg-${data.bg_to}-100 text-${data.clr_to
+        }-900 px-3 py-1 gap-1 rounded-full items-center w-fit">
         <i data-lucide="${data.acc_to?.icon || ""}" class="w-4 h-4"></i>
         <p>${data.acc_to?.name}</p>
       </div>`
-         : "-"
-   }
+        : "-"
+    }
     </td>
-    <td class="whitespace-nowrap">IDR ${myUtils.formatMoney(data.amount)}</td>
+    <td class="whitespace-nowrap py-3">IDR ${myUtils.formatMoney(data.amount)}</td>
     <td>
-      <div class="flex gap-3">
+      <div class="flex gap-3 py-3">
         
         <button id="btn-delete-trc" data-trc="${data.id}">
           <i data-lucide="trash" class="w-4 h-4"></i>
@@ -137,10 +123,22 @@ export const render = {
 
     const table = $("#tableTrans").DataTable({
       pageLength: 10,
+      lengthMenu: [
+        [10, 25, 50, 100],
+        [10, 25, 50, 100],
+      ],
       paging: true,
       searching: true,
       ordering: true,
       scrollX: true,
+      scrollCollapse: true,
+      autoWidth: false,
+      dom: '<"trc-toolbar"<"trc-length"l><"trc-search"f>>rt<"trc-footer"ip>',
+      language: {
+        lengthMenu: "_MENU_",
+        search: "",
+        searchPlaceholder: "Search",
+      },
       order: [[0, "desc"]],
     });
 

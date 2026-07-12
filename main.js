@@ -10,11 +10,41 @@ import { db } from "./db/database.js";
 const datePlace = document.getElementById("dateNow");
 const btnRefresh = document.getElementById("refresh-btn");
 let isRefreshing = false;
+const filterMonthInput = document.getElementById("filter-month");
+const btnApplyFilter = document.getElementById("btn-filter-trc");
+const btnResetFilter = document.getElementById("btn-reset-filter");
 
 const btnImport = document.getElementById("btn-import");
 const fileInput = document.getElementById("import-file");
 
 const btnDownload = document.getElementById("download");
+
+function setDefaultDashboardRange() {
+  const { startDate, endDate } = TransactionService.getCurrentMonthRange();
+
+  if (filterMonthInput) {
+    filterMonthInput.value = startDate.slice(0, 7);
+  }
+
+  window.dashboardTrcFilter = { startDate, endDate };
+}
+
+function getActiveDashboardRange() {
+  if (filterMonthInput?.value) {
+    const [year, month] = filterMonthInput.value.split("-").map(Number);
+    const startDate = `${year}-${String(month).padStart(2, "0")}-01`;
+    const endDate = TransactionService.formatLocalDate(
+      new Date(year, month, 0)
+    );
+
+    return {
+      startDate,
+      endDate,
+    };
+  }
+
+  return TransactionService.getCurrentMonthRange();
+}
 
 async function init() {
   datePlace.innerHTML = new Date().toLocaleDateString("id-ID", {
@@ -24,6 +54,7 @@ async function init() {
     year: "numeric",
   });
 
+  setDefaultDashboardRange();
   refresh();
   // await db.delete()
   // await db.open()
@@ -36,6 +67,9 @@ btnRefresh.addEventListener("click", async () => {
 async function refresh() {
   const containerAcc = document.getElementById("container-accounts");
   const containerTbl = document.getElementById("trc-body");
+  const { startDate, endDate } = getActiveDashboardRange();
+
+  window.dashboardTrcFilter = { startDate, endDate };
 
 
   if ($.fn.DataTable.isDataTable("#tableTrans")) {
@@ -46,7 +80,7 @@ async function refresh() {
   containerTbl.innerHTML = "";
   const [accList, trcList] = await Promise.all([
     accountServices.getAll(),
-    TransactionService.getAll(),
+    TransactionService.getByRange(startDate, endDate),
   ]);
 
   const dataTrc = myUtils.getAllWithAcc(trcList, accList);
@@ -66,6 +100,23 @@ async function refresh() {
 
   lucide.createIcons();
 }
+
+if (btnApplyFilter) {
+  btnApplyFilter.addEventListener("click", async () => {
+    await refresh();
+  });
+}
+
+if (btnResetFilter) {
+  btnResetFilter.addEventListener("click", async () => {
+    setDefaultDashboardRange();
+    await refresh();
+  });
+}
+
+window.addEventListener("dashboard:refresh", async () => {
+  await refresh();
+});
 
 btnDownload.addEventListener("click", async () => {
   const data = await myUtils.exportData();
@@ -155,7 +206,6 @@ async function importBackup(file) {
   const text = await file.text();
   const data = JSON.parse(text);
 
-  // validasi sederhana
   if (!data.acc || !data.trc) {
     throw new Error("Format backup tidak valid");
   }

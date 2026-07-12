@@ -1,4 +1,3 @@
-import { TransactionService } from "../services/transactionService.js";
 import { accountServices } from "../services/accountService.js";
 import { myUtils } from "../utils/utils.js";
 import { TransactionModel } from "../models/transactionModel.js";
@@ -21,12 +20,10 @@ async function init() {
         year: "numeric",
     });
 
-    const [accList, trcList] = await Promise.all([
+    const [accList] = await Promise.all([
         accountServices.getAll(),
-        TransactionService.getAll(),
     ]);
 
-    const dataTrc = myUtils.getAllWithAcc(trcList, accList);
     const elAsset = document.getElementById("ttl-assets");
     const totalBalance = accList.reduce((acc, item) => {
         return acc + item.balance;
